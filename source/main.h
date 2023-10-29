@@ -23,6 +23,7 @@
 #define MAGENTA "\x1B[35m"
 #define CYAN    "\x1B[36m"
 #define WHITE   "\x1B[37m"
+#define DARK_WHITE "\x1B[38;5;250m"
 #define BOLDBLACK   "\x1B[1;30m"
 #define BOLDRED     "\x1B[1;31m"
 #define BOLDGREEN   "\x1B[1;32m"

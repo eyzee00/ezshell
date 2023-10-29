@@ -10,7 +10,7 @@ void prompt_handl(void)
 	char buffer[] = "currentuser";
 	int i = 0, check = 0;
 
-	print_string(BOLDCYAN, prompt);
+	print_string(BOLDBLUE, prompt);
 	ptr = getenv("USER");
 	if (ptr == 0 || *ptr == 0)
 	{
@@ -40,15 +40,16 @@ void prompt_handl(void)
 	print_string(placeholder, prompt);
 	addto_buff(prompt, ':');
 	print_string(RESET, prompt);
-	print_string(BOLDRED, prompt);
+	print_string(BOLD_BRIGHT_BLACK, prompt);
 	ptr = getenv("PWD");
 	if (ptr != 0)
 		print_string(ptr, prompt);
+	print_string(RESET, prompt);
 	print_string(BOLDWHITE, prompt);
 	if (check)
 		print_string("# ", prompt);
 	else
 		print_string("$ ", prompt);
-	print_string(BOLD_BRIGHT_BLACK, prompt);
+	print_string(RESET, prompt);
 	write(1, prompt, __strlen(prompt));
 }
