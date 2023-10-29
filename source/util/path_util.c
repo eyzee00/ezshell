@@ -1,5 +1,5 @@
-#include "main.h"
-#include <dirent.h>
+#include "../main.h"
+
 /**
  * add_node_end_path - adds a node to the pathlist
  * add to linkedlist
@@ -105,24 +105,4 @@ path_t *path_creator(path_t **head)
 	}
 	free(buffer);
 	return (*head);
-}
-/**
- * free_pathlist - frees a pathlist
- * @head: the address of the first element in the list
- * Return: (void)
- */
-void free_pathlist(path_t **head)
-{
-	path_t *iter = *head, *placeholder;
-
-	if (iter == NULL)
-		return;
-	while (iter != NULL)
-	{
-		placeholder = iter;
-		iter = iter->next;
-		free(placeholder->name);
-		free(placeholder);
-	}
-	head = NULL;
 }

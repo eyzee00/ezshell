@@ -1,5 +1,5 @@
-#include "main.h"
-#include <unistd.h>
+#include "../main.h"
+
 /**
  * print_decimal - adds an integer to the buffer
  * @n: the number to be printed
@@ -22,28 +22,6 @@ void print_decimal(int n, char *buffer)
 		print_decimal(number, buffer);
 	curr_char = (unsigned int) n % 10 + 48;
 	addto_buff(buffer, curr_char);
-}
-/**
-  * file_exist_exec - file exit & executable
-  * @command: user command
-  * Return: 1 for success -1 if faill
-  */
-int file_exist_exec(char *command)
-{
-	struct stat status;
-	int check;
-
-	check = stat(command, &status);
-	if (check == 0)
-	{
-		if (S_ISDIR(status.st_mode))
-			return (-1);
-		if (access(command, X_OK) == 0)
-			return (1);
-		else
-			return (0);
-	}
-	return (-1);
 }
 /**
  * addto_buff - adds a character to the end of the given buffer
@@ -81,19 +59,67 @@ void print_string(char *string, char *buffer)
 	print_string(string + i, buffer);
 }
 /**
- * space_check - checks if the string contains only spaces
- * @buffer: the string we're checking
- * Return: (1) if the string is only spaces, (0) otherwise
+ * _atoi - converts a string to integer
+ * @s: string to be converted
+ * Return: the equivalent integer to s
  */
-int space_check(char *buffer)
-{
-	int i = 0;
 
-	while (buffer[i] != 0)
+int _atoi(char *s)
+{
+	bool isnegative = false, hasnumbers = false;
+	unsigned int i, integer = 0;
+
+	for (i = 0; i < (unsigned int)__strlen(s); i++)
 	{
-		if (buffer[i] != 32 && buffer[i] != 10)
-			return (0);
-		i++;
+		if (s[i] == '-')
+		{
+			if (!isnegative)
+				isnegative = true;
+			else
+				isnegative = false;
+		}
+		while (s[i] >= 48 && s[i] <= 57)
+		{
+			hasnumbers = true;
+			integer = integer * 10 + (s[i] - 48);
+			i++;
+		}
+		if (hasnumbers)
+			break;
 	}
-	return (1);
+	if (!hasnumbers)
+		return (0);
+
+	else
+	{
+		if (isnegative)
+			return (integer * (-1));
+		else
+			return (integer);
+	}
+}
+/**
+  * fill_row_logic - fill worldlist pointer with words
+  * @wordlist: pointer
+  * @row: wordlist pointer row
+  * @word: content to fill
+  */
+void fill_row_logic(char **wordlist, int row, char *word)
+{
+	int i = 0, j = 0;
+
+	while (word[i] == 32 || word[i] == '&' || word[i] == '|')
+		i++;
+	while (word[i] != 0)
+	{
+		if (word[i] != 10 && (word[i] != '&' || word[i] != '|'))
+		{
+			wordlist[row][j] = word[i];
+			i++;
+			j++;
+		}
+		else
+			i++;
+	}
+	wordlist[row][i] = '\0';
 }

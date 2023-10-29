@@ -1,4 +1,4 @@
-#include "main.h"
+#include "../main.h"
 /**
  * bltn_chck - checks for supported builtin
  * @buff: user's command entry
@@ -68,46 +68,6 @@ int exit_handler(char *buffer, alloclist_t **head, path_t **path)
 	return (-1);
 }
 /**
- * _atoi - converts a string to integer
- * @s: string to be converted
- * Return: the equivalent integer to s
- */
-
-int _atoi(char *s)
-{
-	bool isnegative = false, hasnumbers = false;
-	unsigned int i, integer = 0;
-
-	for (i = 0; i < (unsigned int)__strlen(s); i++)
-	{
-		if (s[i] == '-')
-		{
-			if (!isnegative)
-				isnegative = true;
-			else
-				isnegative = false;
-		}
-		while (s[i] >= 48 && s[i] <= 57)
-		{
-			hasnumbers = true;
-			integer = integer * 10 + (s[i] - 48);
-			i++;
-		}
-		if (hasnumbers)
-			break;
-	}
-	if (!hasnumbers)
-		return (0);
-
-	else
-	{
-		if (isnegative)
-			return (integer * (-1));
-		else
-			return (integer);
-	}
-}
-/**
  * env_handler - handles printing the environment
  * @buffer: buffer
  * @head: head of the allocation list
@@ -141,5 +101,55 @@ int emptycmd_handler(char *buffer, alloclist_t **head, path_t **path)
 	head = (alloclist_t **) head;
 	buffer = (char *) buffer;
 	path = (path_t **) path;
+	return (-1);
+}
+/**
+ * cd_handler - changes directory
+ * @buffer: the user commmand
+ * @head: head of the alloclist
+ * @path: head of the pathlist
+ * Return: (1)
+ */
+int cd_handler(char *buffer, alloclist_t **head, path_t **path)
+{
+	char **command, *buff1, buff2[256], *buff3;
+	int wordc, check;
+
+	buff3 = buff2;
+	wordc = word_count(buffer);
+	command = tokenizer(buffer);
+	path = (path_t **) path;
+	if (wordc == 1)
+	{
+		buff1 = getenv("HOME");
+		check = chdir(buff1);
+		if (check == -1)
+		{
+			cd_err(command, getenv("_"), wordc);
+			return (-1);
+		}
+		replacer(head, buff3, command, wordc);
+	}
+	else if (command[1][0] == '-' && command[1][1] == 0)
+	{
+		buff1 = getenv("OLDPWD");
+		check = chdir(buff1);
+		if (check == -1)
+		{
+			cd_err(command, _getenv("_"), wordc);
+			return (-1);
+		}
+		replacer(head, buff3, command, wordc);
+	}
+	else
+	{
+		check = chdir(command[1]);
+		if (check == -1)
+		{
+			cd_err(command, _getenv("_"), wordc);
+			return (-1);
+		}
+		replacer(head, buff3, command, wordc);
+	}
 	return (-1);
 }

@@ -1,21 +1,71 @@
-#include "main.h"
+#include "../main.h"
 /**
- * cmd_counter - count the number of commands
- * count user command entry
- * @str: the string to operate with
- * Return: the line count if successful
+ * commandtok - tokenize our argument
+ * split user command in an array
+ * @ch: strings
+ * @del: delimiter
+ * Return: pointer to wordlist
  */
-int cmd_counter(char *str)
+char **commandtok(char *ch, char *del)
 {
-	int i = 0, counter = 0;
+	int linec = 0, i = 1, char_count = 0;
+	char *command = NULL;
+	char **commandlist = NULL;
 
-	while (*(str + i) != 0)
+	if (ch == NULL)
+		return (NULL);
+	linec = line_counter(ch);
+	commandlist = malloc(sizeof(char *) * (linec + 1));
+	if (commandlist == NULL)
+		return (NULL);
+	command = _strtok(ch, del);
+	if (command != NULL)
 	{
-		if (*(str + i) == ';')
-			counter++;
+	char_count = __strlen(command);
+	*commandlist = _calloc(char_count + 2, sizeof(char));
+	if (*commandlist == NULL)
+	{
+		free(commandlist);
+		return (NULL);
+	}
+	fill_row_def(commandlist, 0, command);
+	}
+	while (i < linec)
+	{
+		command = _strtok(NULL, del);
+		if (command != NULL)
+		{
+		char_count = __strlen(command);
+		*(commandlist + i) = _calloc(char_count + 2, sizeof(char));
+		if (*(commandlist + i) == NULL)
+		{
+			free_memory(commandlist, i);
+			return (NULL);
+		}
+		fill_row_def(commandlist, i, command);
+		}
 		i++;
 	}
-	return (counter + 1);
+	commandlist[i] = NULL;
+	return (commandlist);
+}
+/**
+  * fill_row_def - fill worldlist pointer with words
+  * put words into wordlist pointer
+  * @wordlist: pointer
+  * @row: wordlist pointer row
+  * @word: content to fill
+  */
+void fill_row_def(char **wordlist, int row, char *word)
+{
+	int i = 0;
+
+	while (word[i] != 0)
+	{
+		wordlist[row][i] = word[i];
+		i++;
+	}
+	wordlist[row][i] = '\0';
 }
 /**
  * cmdtok - tokenizes the user's input
@@ -89,36 +139,6 @@ void fill_row_cmd(char **wordlist, int row, char *word)
 			i++;
 	}
 	wordlist[row][i] = '\0';
-}
-/**
- * multicmd_hand - handles multiple commands
- * @buffer: user input
- * @argv: name of the shell
- * @p: pathlist
- * @head: head of the alloclist
- * Return: (void)
- */
-void multicmd_hand(char *buffer, char *argv, path_t **p, alloclist_t **head)
-{
-	int cmdc, check, i, wordc;
-	char **commandlist, **command;
-	int (*f)(char *buffer, alloclist_t **head, path_t **path);
-
-	cmdc = cmd_counter(buffer);
-	commandlist = cmdtok(buffer);
-	for (i = 0; i < cmdc; i++)
-	{
-		f = bltn_chck(commandlist[i]);
-		if (f != NULL)
-			if (f(commandlist[i], head, p) == 1)
-				continue;
-		var_set(commandlist[i], &wordc, &command);
-		check = file_exist_exec(command[0]);
-		if (exec_handl(check, command, argv, p, wordc, i))
-			continue;
-		free_memory(command, wordc);
-	}
-	free_memory(commandlist, cmdc);
 }
 /**
  * _strtok - custom strtok

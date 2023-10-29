@@ -1,0 +1,2 @@
+#!/bin/bash
+gcc source/*.c source/main.h source/util/*.c -o ezshell

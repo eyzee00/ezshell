@@ -1,4 +1,4 @@
-#include "main.h"
+#include "../main.h"
 /**
   * _strlen - count string length
   * it check for EOF
