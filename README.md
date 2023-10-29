@@ -1,4 +1,7 @@
-# simple_shell
-Our implementation of a simple Shell using the C programming language, I know! It's absolutely terrifying
-We manage to work on it together, Hamza is the genius here
-I learn alot working with him
+# ezshell: An Improved version of simple_shell
+My take on how to implement a simple Shell using the C programming language. using only a few syscalls and standard Unix C functions, I've been able to pretty much simulate the functionality of the "SH" shell present in the /bin directory. Managing memory manually was tough, to say the least, but I've managed to get the shell running without memory leaks, and made sure to handle kill and interupt signals properly, and free memory when necessary.
+The ezshell can execute simple commands, multiple commands and logically connected commands, pipes are still in development for now. The user can interact with the shell throught 3 different modes:
+ 
+ **bold**1-Interactive mode:**normal**Your usual shell experience, the ezshell displays a prompt containing relevant information like the current user name, the path to the current directory and the user's privelges('$' for a normal user, '#' for superuser), and waits for input. The shell processes the command and executes it if written correctly, in case of failure, an error message is written to the standard error.
+
+**bold**2-Non-Interative Mode:**normal**The ezshell always checks if input was written to its standard input before it was called, for example you can use echo and redirect its output using a pipe to ezshell standard input, like: **code**echo "ls -l -a --color=auto" | ./ezshell**normal**
